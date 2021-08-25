@@ -1,4 +1,4 @@
-import { galleryItems } from "./app.js"; // імпортую сюди зображення з apps.js. Нас так вчив Андрій при роботі з посиланнями.
+import {galleryItems} from "./app.js"; // імпортую сюди зображення з apps.js. Нас так вчив Андрій при роботі з посиланнями.
 
 // ссилки на потрібні елементи
 const ulListRef = document.querySelector(".js-gallery"); 
