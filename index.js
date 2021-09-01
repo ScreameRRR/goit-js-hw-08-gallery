@@ -37,17 +37,29 @@ const modalIsOpen = (e) => {
     modalImageRef.src = e.target.dataset.source;
     modalImageRef.alt = e.target.alt;
     modalImageRef.dataset.index = e.target.dataset.index;
-    window.addEventListener("keydown", closeModalEscAndSlider);
+    window.addEventListener("keydown", modalIsClose);
 };
 
 // Тут є функція закриття модального вікна
 const modalIsClose = (e) =>{ 
-    if(e.target.classList.contains("lightbox__button") || e.target.classList.contains("lightbox__overlay")) { // Якщо нажали на кнопку button або на overlay
+    if(e.target.classList.contains("lightbox__button") || e.target.classList.contains("lightbox__overlay") || e.code === "Escape") { // Якщо нажали на кнопку button, esc або overlay
         modalRef.classList.remove("is-open");// Знімаємо класс is-open і в img обновлюємо усі атрибути
         modalImageRef.src = "";
         modalImageRef.alt = "";
         modalImageRef.dataset.index = "";
-        window.removeEventListener("keydown", closeModalEscAndSlider);
+        window.removeEventListener("keydown", modalIsClose);
+    }
+
+        let currentIndexImageInModal = Number(modalImageRef.dataset.index) // У змінну currentIndexImageInModal записуємо індекс поточної картинки в модальному вікні
+
+
+    if (e.key === "ArrowRight" && currentIndexImageInModal <= galleryItems.length - 2) { // Якшо нажимається ArrowRight та індекс <= довжини массива
+        modalImageRef.src = galleryItems[currentIndexImageInModal + 1].original; // В src поточна картинка перезаписується у src наступної картинки
+        modalImageRef.dataset.index = currentIndexImageInModal + 1;// а у data-index поточний індекс +1
+    }
+    if (e.key === "ArrowLeft" && currentIndexImageInModal > 0) {
+        modalImageRef.src = galleryItems[currentIndexImageInModal - 1].original;
+        modalImageRef.dataset.index = currentIndexImageInModal - 1;
     }
     return;
 }
@@ -55,29 +67,6 @@ const modalIsClose = (e) =>{
 
 const galleryImageRef = document.querySelectorAll(".gallery__image"); // Посилання на всі потрібні зображення img 
 galleryImageRef.forEach((item, index) => item.dataset.index = `${index}`); // В кожен img добавляєм атрибут data-index значення якого буде індекс
-
-const closeModalEscAndSlider = (e) => { // При нажиманні на клавішу Esc атрибути обнуляются и модальне вікно закривается
-    if(e.code === "Escape") {
-        modalRef.classList.remove("is-open");
-        modalImageRef.src = "";
-        modalImageRef.alt = "";
-        modalImageRef.dataset.index = "";
-        window.removeEventListener("keydown", closeModalEscAndSlider);
-    };
-  
-    
-    let currentIndexImageInModal = Number(modalImageRef.dataset.index) // У змінну currentIndexImageInModal записуємо індекс поточної картинки в модальному вікні
-
-
-    if(e.key === "ArrowRight" && currentIndexImageInModal <= galleryItems.length -2) { // Якшо нажимається ArrowRight та індекс <= довжини массива
-        modalImageRef.src = galleryItems[currentIndexImageInModal + 1 ].original; // В src поточна картинка перезаписується у src наступної картинки
-        modalImageRef.dataset.index = currentIndexImageInModal + 1;// а у data-index поточний індекс +1
-    } 
-    if(e.key === "ArrowLeft" && currentIndexImageInModal > 0) {
-        modalImageRef.src = galleryItems[currentIndexImageInModal-1].original;
-        modalImageRef.dataset.index = currentIndexImageInModal -1;
-    }
-};
 
 
 ulListRef.addEventListener("click", modalIsOpen);
